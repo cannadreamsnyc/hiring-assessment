@@ -374,42 +374,11 @@
 
   <div id="results">
     <header class="hero" style="padding-bottom:0;">
-      <p class="eyebrow"><span class="dot"></span>Result</p>
-      <h1 class="display" id="resultsHeading" style="font-size:30px;">Assessment Complete</h1>
+      <p class="eyebrow"><span class="dot"></span>Submitted</p>
+      <h1 class="display" style="font-size:30px;">Thanks &mdash; You're All Set</h1>
       <p class="sub" id="resultsSub"></p>
-      <p class="field-note">A copy of your responses has been emailed to you. Thanks for applying.</p>
+      <p class="field-note">A copy of your responses has been emailed to you. We'll follow up if your background is a fit for the role.</p>
     </header>
-
-    <div class="score-hero">
-      <div class="score-ring">
-        <svg width="140" height="140" viewBox="0 0 140 140">
-          <circle class="track" cx="70" cy="70" r="59"></circle>
-          <circle class="fill" id="ringFill" cx="70" cy="70" r="59" stroke-dasharray="370.7" stroke-dashoffset="370.7"></circle>
-        </svg>
-        <div class="num">
-          <div class="val mono" id="scoreVal">0</div>
-          <div class="max">of 80</div>
-        </div>
-      </div>
-      <div>
-        <div class="verdict-band" id="verdictBand">&mdash;</div>
-        <div class="verdict-title" id="verdictTitle">&mdash;</div>
-        <p class="verdict-desc" id="verdictDesc"></p>
-      </div>
-    </div>
-
-    <div class="section-grid" id="sectionBars"></div>
-
-    <div class="flag-panel">
-      <h3 class="display">Answers Worth Probing In Interview</h3>
-      <p class="sub">Red-flag responses only &mdash; the answers most correlated with each trait's failure mode. One alone isn't disqualifying; look for a pattern.</p>
-      <div id="flagList"></div>
-    </div>
-
-    <div class="results-actions">
-      <button onclick="window.print()">Print / Save Report</button>
-      <button class="ghost" id="restartBtn">Start Over</button>
-    </div>
   </div>
 
   <div id="duplicateNotice" style="display:none;">
@@ -683,10 +652,6 @@
     computeResults();
   });
 
-  document.getElementById('restartBtn').addEventListener('click', function(){
-    location.reload();
-  });
-
   function computeResults(){
     var sectionScores = {}; // letter -> {score, max}
     sections.forEach(function(s){ sectionScores[s.letter] = {score:0, max:s.qs.length * 2, title:s.title}; });
@@ -714,76 +679,17 @@
     document.getElementById('resultsSub').textContent =
       (name ? name : 'Candidate') + (role ? ' — ' + role : '') + ' · ' + new Date().toLocaleDateString();
 
-    var pct = totalScore / 80;
-    var circumference = 2 * Math.PI * 59;
-    var ring = document.getElementById('ringFill');
-    ring.setAttribute('stroke-dasharray', circumference.toFixed(1));
-    ring.setAttribute('stroke-dashoffset', (circumference * (1 - pct)).toFixed(1));
-    document.getElementById('scoreVal').textContent = totalScore;
-
-    var band = document.getElementById('verdictBand');
-    var title = document.getElementById('verdictTitle');
-    var desc = document.getElementById('verdictDesc');
-
     var redFlagSections = {};
     flags.forEach(function(f){ redFlagSections[f.section] = (redFlagSections[f.section] || 0) + 1; });
     var maxFlagInSection = Math.max(0, Object.keys(redFlagSections).length ? Math.max.apply(null, Object.values(redFlagSections)) : 0);
 
+    var bandLabel;
     if (totalScore >= 68 && maxFlagInSection < 3){
-      band.textContent = 'Strong';
-      band.style.color = 'var(--good)';
-      band.style.background = 'var(--good-bg)';
-      title.textContent = 'Advance to interview';
-      desc.textContent = 'Strong indicators across all five traits. No concentrated pattern of concerning answers.';
+      bandLabel = 'Strong';
     } else if (totalScore >= 52 && maxFlagInSection < 3){
-      band.textContent = 'Solid';
-      band.style.color = 'var(--accent)';
-      band.style.background = 'var(--accent-soft)';
-      title.textContent = 'Generally solid — probe the lower section(s)';
-      desc.textContent = 'A reasonable baseline. Use the interview to ask directly about whichever section scored lowest below.';
+      bandLabel = 'Solid';
     } else {
-      band.textContent = 'Caution';
-      band.style.color = 'var(--bad)';
-      band.style.background = 'var(--bad-bg)';
-      title.textContent = 'Serious caution flag';
-      desc.textContent = maxFlagInSection >= 3
-        ? 'Multiple red-flag answers are concentrated in one trait — probe that specifically before proceeding.'
-        : 'Score is below the typical bar. Treat as a caution flag and probe directly in interview before proceeding.';
-    }
-
-    var barsWrap = document.getElementById('sectionBars');
-    barsWrap.innerHTML = '';
-    sections.forEach(function(s){
-      var d = sectionScores[s.letter];
-      var p = d.score / d.max;
-      var color = p >= 0.85 ? 'var(--good)' : (p >= 0.6 ? 'var(--accent)' : 'var(--bad)');
-      var bg = p >= 0.85 ? 'var(--good-bg)' : (p >= 0.6 ? 'var(--accent-soft)' : 'var(--bad-bg)');
-      var card = document.createElement('div');
-      card.className = 'sbar-card';
-      card.innerHTML =
-        '<div class="sbar-top">' +
-          '<span class="sbar-icon" style="background:' + bg + '; color:' + color + ';">' + ICONS[s.letter] + '</span>' +
-          '<span class="sbar-label">' + s.title + '</span>' +
-          '<span class="sbar-val">' + d.score + '/' + d.max + '</span>' +
-        '</div>' +
-        '<div class="sbar-track"><div class="sbar-fill" style="width:' + (p*100) + '%; background:' + color + ';"></div></div>';
-      barsWrap.appendChild(card);
-    });
-
-    var flagList = document.getElementById('flagList');
-    flagList.innerHTML = '';
-    if (flags.length === 0){
-      var empty = document.createElement('div');
-      empty.className = 'flag-empty';
-      empty.textContent = 'No red-flag answers selected. Nothing specific to probe from this test alone.';
-      flagList.appendChild(empty);
-    } else {
-      flags.forEach(function(f){
-        var item = document.createElement('div');
-        item.className = 'flag-item';
-        item.innerHTML = '<span class="fnum">Q' + f.num + '</span><span><strong>' + f.section + '.</strong> Chose: "' + f.chosen + '"</span>';
-        flagList.appendChild(item);
-      });
+      bandLabel = 'Caution';
     }
 
     var payload = {
@@ -793,7 +699,7 @@
       email: email,
       dob: dob,
       score: totalScore,
-      band: band.textContent,
+      band: bandLabel,
       sections: { A: sectionScores.A.score, B: sectionScores.B.score, C: sectionScores.C.score, D: sectionScores.D.score, E: sectionScores.E.score },
       flags: flags.map(function(f){ return 'Q' + f.num + ' (' + f.section + '): chose "' + f.chosen + '"'; }),
       answers: answerLog
