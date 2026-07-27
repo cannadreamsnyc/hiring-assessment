@@ -111,6 +111,11 @@
     transition: width 0.3s cubic-bezier(.4,0,.2,1);
   }
   .progress-count { font-size: 12.5px; color: var(--text-dim); white-space: nowrap; }
+  .timer-badge {
+    font-size: 12.5px; white-space: nowrap; padding: 4px 10px; border-radius: 20px;
+    background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border);
+  }
+  .timer-badge.timer-warn { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
 
   .wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 90px; }
 
@@ -326,6 +331,7 @@
   <div class="progress-inner">
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-count mono" id="progressCount">0 / 60 answered</div>
+    <div class="timer-badge mono" id="timerBadge">25:00</div>
   </div>
 </div>
 
@@ -361,7 +367,7 @@
 
     <div class="instructions">
       <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      <div><strong>How this works:</strong> fill in your contact info, then choose one answer per question below. There's no timer. Every field and question must be completed before you can submit &mdash; the button will tell you if something's missing.</div>
+      <div><strong>How this works:</strong> fill in your contact info, then choose one answer per question below. You have about 25 minutes &mdash; there's no hard cutoff, so if you run past it just finish up and submit. Every field and question must be completed before you can submit &mdash; the button will tell you if something's missing.</div>
     </div>
   </header>
 
@@ -658,6 +664,26 @@
     return answered;
   }
   updateProgress();
+
+  (function(){
+    var TOTAL_SECONDS = 25 * 60;
+    var remaining = TOTAL_SECONDS;
+    var badge = document.getElementById('timerBadge');
+    if (!badge) return;
+    var tick = setInterval(function(){
+      remaining--;
+      if (remaining <= 0){
+        badge.textContent = "Take your time — finish up";
+        badge.classList.add('timer-warn');
+        clearInterval(tick);
+        return;
+      }
+      var m = Math.floor(remaining / 60);
+      var s = remaining % 60;
+      badge.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      if (remaining <= 300) badge.classList.add('timer-warn');
+    }, 1000);
+  })();
 
   var contactFields = ['candidateName', 'candidateRole', 'candidatePhone', 'candidateEmail', 'candidateDob'];
 
