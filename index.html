@@ -1,6 +1,6 @@
 <meta charset="utf-8">
-<title>Reliability & Character Assessment</title>
-<meta name="description" content="Interactive 40-question pre-employment screen for reliability, honesty, teamwork, following instructions, and initiative.">
+<title>Pre-Employment Assessment</title>
+<meta name="description" content="Interactive 60-question pre-employment screen covering reliability, honesty, teamwork, following instructions, initiative, customer service, and basic retail math.">
 <meta name="robots" content="noindex, nofollow">
 <style>
   :root {
@@ -325,15 +325,15 @@
 <div id="progressbar">
   <div class="progress-inner">
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-count mono" id="progressCount">0 / 40 answered</div>
+    <div class="progress-count mono" id="progressCount">0 / 60 answered</div>
   </div>
 </div>
 
 <div class="wrap">
   <header class="hero">
     <p class="eyebrow"><span class="dot"></span>Pre-Employment Screen</p>
-    <h1 class="display">Reliability &amp; Character Assessment</h1>
-    <p class="sub">40 short scenarios covering reliability, honesty, teamwork, following instructions, and initiative. Answer with what you'd actually do &mdash; plain answers score better than performed ones.</p>
+    <h1 class="display">Pre-Employment Assessment</h1>
+    <p class="sub">60 short questions covering reliability, honesty, teamwork, following instructions, initiative, customer service, and basic retail math. Answer with what you'd actually do &mdash; plain answers score better than performed ones. The math questions have one correct answer, so take your time on those.</p>
 
     <div class="field-grid">
       <div class="field">
@@ -413,7 +413,9 @@
     B: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
     C: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5c2.5.3 4.5 2.4 4.5 5"/></svg>',
     D: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h10v16H9"/><path d="M9 4H5v16h4"/><path d="M13 9l2 2 4-4"/></svg>',
-    E: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>'
+    E: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>',
+    F: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-8h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-8H3z"/></svg>',
+    G: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 10h1M12 10h1M16 10h1M8 14h1M12 14h1M16 14h1M8 18h1M12 18h1M16 18h1"/></svg>'
   };
 
   // Each question: text, options[4] with a score (2 = best, 1 = neutral, 0 = red flag)
@@ -507,6 +509,50 @@
         [["Bring it to a manager now so it can be evaluated and possibly rolled out to the team",2],["Keep quietly using it yourself since it already works for you and you don't want to deal with a formal process",0],["Mention it casually to coworkers without telling management",1],["Assume someone will eventually notice and ask you about it",1]]],
       ["Looking back at a past job or project, how would you describe the balance between waiting for instructions and acting on your own judgment?",
         [["I act on reasonable judgment for small things and check in on bigger ones",2],["I mostly wait to be told what to do",1],["I mostly just do what I think is right without checking in",1],["I try to do as little as possible until asked",0]]]
+    ]},
+    {letter:"F", title:"Customer Service", desc:"", qs:[
+      ["A customer walks in and says they're \"just browsing\" but seems a little overwhelmed by the menu. What's the best approach?",
+        [["Give them space, but check back in a minute or two in case they have questions",2],["Follow them closely through the store narrating every product",0],["Immediately start recommending best-sellers",1],["Leave them alone completely for the whole visit",1]]],
+      ["A regular customer wants delivery to a hotel room but company policy requires ID verification at the door every time. They're annoyed and ask if you can just skip it since they've ordered before. What do you do?",
+        [["Politely explain the ID check is required every time and can't be skipped",2],["Skip it since they're a known regular",0],["Ask a manager to make an exception",1],["Cancel the order to avoid the conflict",1]]],
+      ["A first-time customer asks what will \"get them the highest.\" What do you do?",
+        [["Ask about their goals and comfort level, and recommend a low-dose option with guidance on how to start",2],["Recommend the strongest product available since that's what they asked for",0],["Tell them you're not able to discuss effects at all",1],["Guess based on whatever's popular that week",1]]],
+      ["A customer politely asks whether cannabis will interact with a medication they're taking. What's the best response?",
+        [["Let them know you can't give medical advice, suggest they check with their doctor or pharmacist, and share general product info if helpful",2],["Give your best guess based on what other customers have said, since you're trying to be helpful",0],["Tell them cannabis is natural so it's always safe with medication",0],["Refuse to talk to them about the product at all",1]]],
+      ["A long line has formed while one customer takes a while to decide. What do you do?",
+        [["Keep helping them at a reasonable pace, acknowledge the line, and loop in another staff member if one's available",2],["Rush the customer so the line moves faster",0],["Ignore the line completely and let the customer take as long as they want",1],["Ask the customer to step aside and come back later",1]]],
+      ["A customer raises their voice, frustrated about how long delivery is taking. What's the best response?",
+        [["Stay calm, acknowledge their frustration, and let them know what you're doing to help",2],["Match their tone so they know you're taking it seriously",0],["Ignore them until they calm down on their own",1],["Immediately hand it off to a manager without trying to help first",1]]],
+      ["A customer wants to return an opened edible because they didn't like the taste. State cannabis regulations generally don't allow returns on opened cannabis products. What do you do?",
+        [["Explain that opened cannabis products can't be returned under state rules, and help them find a better fit next time",2],["Process the return anyway, since keeping the customer happy matters most",0],["Tell them to take it up with the state",1],["Refuse to help them with anything going forward",1]]],
+      ["A customer asks which product is \"the best.\" What's the most helpful response?",
+        [["Ask what they're looking for (relaxation, energy, sleep, etc.) and recommend based on that",2],["Point them to the most expensive product",0],["Say all products are equally good",1],["Recommend whatever you personally like best, regardless of what they're looking for",1]]],
+      ["A customer seems intoxicated or impaired and asks to buy more product. What's the right move?",
+        [["Use judgment, and if there's a genuine concern, politely decline or check with a manager rather than completing the sale automatically",2],["Complete the sale quickly since refusing might upset them",0],["Call the police immediately",1],["Lecture them about their choices",1]]],
+      ["A customer implies you should recommend \"whatever the owner would want pushed today\" rather than what actually fits them. What do you do?",
+        [["Recommend what genuinely fits their needs — trust brings people back more reliably than a pushy upsell",2],["Push the highest-margin item since that's best for the business in the moment",0],["Refuse to make any recommendation at all",1],["Tell them you don't have opinions on the products",1]]]
+    ]},
+    {letter:"G", title:"Basic Math for Retail", desc:"Work these out in your head or on paper — a calculator isn't necessary, but accuracy is what matters here.", qs:[
+      ["A customer's total is $42.00 and they pay with a $50 bill. How much change do they get back?",
+        [["$8.00",2],["$7.00",0],["$12.00",0],["$8.50",0]]],
+      ["An eighth of flower (3.5g) costs $40.00. What is the price per gram, to the nearest cent?",
+        [["$11.43",2],["$10.00",0],["$12.50",0],["$8.75",0]]],
+      ["A product costs $60.00 before a 20% discount. What's the discounted price?",
+        [["$48.00",2],["$40.00",0],["$50.00",0],["$45.00",0]]],
+      ["A customer buys 2 items at $25.00 each and 1 item at $15.00. What's the subtotal before tax?",
+        [["$65.00",2],["$60.00",0],["$70.00",0],["$55.00",0]]],
+      ["A customer's subtotal is $50.00 and the tax rate is 13%. What is the total after tax?",
+        [["$56.50",2],["$63.00",0],["$55.00",0],["$57.50",0]]],
+      ["A pre-roll pack of 5 costs $35.00. What's the price per pre-roll?",
+        [["$7.00",2],["$6.50",0],["$7.50",0],["$5.00",0]]],
+      ["A promotion is \"Buy 2, Get 1 Free\" on $12.00 pre-rolls. A customer buys 3. How much do they actually pay?",
+        [["$24.00",2],["$36.00",0],["$18.00",0],["$12.00",0]]],
+      ["A customer has a $10.00-off coupon on a $35.00 order. The tax rate is 8%, applied after the discount. What's the final total?",
+        [["$27.00",2],["$27.80",0],["$25.00",0],["$28.00",0]]],
+      ["An eighth (3.5g) is priced at $45.00 total. A customer wants just 1 gram at that same per-gram rate. How much do they pay, to the nearest cent?",
+        [["$12.86",2],["$45.00",0],["$15.00",0],["$11.25",0]]],
+      ["A customer's total is $18.47. They hand you a $20 bill plus 2 dimes to make the change come out even. How much change do they get back?",
+        [["$1.73",2],["$1.53",0],["$1.63",0],["$2.73",0]]]
     ]}
   ];
 
@@ -684,9 +730,9 @@
     var maxFlagInSection = Math.max(0, Object.keys(redFlagSections).length ? Math.max.apply(null, Object.values(redFlagSections)) : 0);
 
     var bandLabel;
-    if (totalScore >= 68 && maxFlagInSection < 3){
+    if (totalScore >= 102 && maxFlagInSection < 3){
       bandLabel = 'Strong';
-    } else if (totalScore >= 52 && maxFlagInSection < 3){
+    } else if (totalScore >= 78 && maxFlagInSection < 3){
       bandLabel = 'Solid';
     } else {
       bandLabel = 'Caution';
@@ -700,7 +746,7 @@
       dob: dob,
       score: totalScore,
       band: bandLabel,
-      sections: { A: sectionScores.A.score, B: sectionScores.B.score, C: sectionScores.C.score, D: sectionScores.D.score, E: sectionScores.E.score },
+      sections: { A: sectionScores.A.score, B: sectionScores.B.score, C: sectionScores.C.score, D: sectionScores.D.score, E: sectionScores.E.score, F: sectionScores.F.score, G: sectionScores.G.score },
       flags: flags.map(function(f){ return 'Q' + f.num + ' (' + f.section + '): chose "' + f.chosen + '"'; }),
       answers: answerLog
     };
