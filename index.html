@@ -140,6 +140,7 @@
   .field input:focus-visible { outline: none; border-color: var(--accent); }
   .field input:invalid.touched { border-color: var(--bad); }
   .field-note { color: var(--text-dim); font-size: 12.5px; margin: 10px 0 0; max-width: 62ch; }
+  .hp-field { position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
   .instructions {
     display: flex; gap: 12px; align-items: flex-start;
@@ -364,7 +365,12 @@
     </div>
   </header>
 
-  <form id="form"></form>
+  <form id="form">
+    <div class="hp-field" aria-hidden="true">
+      <label for="cdHoneypot">Leave this field blank</label>
+      <input type="text" id="cdHoneypot" name="cdHoneypot" tabindex="-1" autocomplete="off">
+    </div>
+  </form>
 
   <div id="results">
     <header class="hero" style="padding-bottom:0;">
@@ -406,6 +412,14 @@
     </div>
   </div>
 
+  <div id="duplicateNotice" style="display:none;">
+    <header class="hero" style="padding-bottom:0;">
+      <p class="eyebrow"><span class="dot"></span>Already Submitted</p>
+      <h1 class="display" style="font-size:30px;">You've Already Completed This Assessment</h1>
+      <p class="sub">Our records show a previous submission from this device, phone number, or email. If you believe this is a mistake, please contact us directly rather than resubmitting.</p>
+    </header>
+  </div>
+
   <footer class="note">
     Screening aid, not a certified psychometric instrument &mdash; use alongside a normal interview, and apply identically to every candidate for the same role.
   </footer>
@@ -414,6 +428,16 @@
 <script>
 (function(){
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxE9iSA5Jz1E51i2kONtYFTcxdZWgNrSOGTzuRBjfVAeudxFpFNkacsmqxMQp-Zby7TFA/exec';
+  var SUBMITTED_KEY = 'cd_assessment_submitted';
+
+  var alreadySubmitted = false;
+  try { alreadySubmitted = !!localStorage.getItem(SUBMITTED_KEY); } catch (e){}
+  if (alreadySubmitted){
+    document.querySelectorAll('.wrap > header.hero')[0].style.display = 'none';
+    document.getElementById('form').style.display = 'none';
+    document.getElementById('duplicateNotice').style.display = 'block';
+    return;
+  }
 
   var ICONS = {
     A: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
@@ -625,6 +649,12 @@
   form.addEventListener('submit', function(e){
     e.preventDefault();
 
+    var honeypot = document.getElementById('cdHoneypot');
+    if (honeypot && honeypot.value){
+      // Bot filled a field real users never see. Pretend nothing happened.
+      return;
+    }
+
     var missingContact = contactFields.filter(function(id){
       var el = document.getElementById(id);
       el.classList.add('touched');
@@ -756,7 +786,7 @@
       });
     }
 
-    submitToBackend({
+    var payload = {
       name: name,
       role: role,
       phone: phone,
@@ -767,29 +797,39 @@
       sections: { A: sectionScores.A.score, B: sectionScores.B.score, C: sectionScores.C.score, D: sectionScores.D.score, E: sectionScores.E.score },
       flags: flags.map(function(f){ return 'Q' + f.num + ' (' + f.section + '): chose "' + f.chosen + '"'; }),
       answers: answerLog
-    });
+    };
 
-    document.getElementById('form').style.display = 'none';
-    document.querySelectorAll('.wrap > header.hero')[0].style.display = 'none';
-    document.getElementById('results').style.display = 'block';
-    window.scrollTo({top:0, behavior:'smooth'});
+    var submitBtn = document.getElementById('submitBtn');
+    if (submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
+
+    submitToBackend(payload).then(function(result){
+      document.getElementById('form').style.display = 'none';
+      document.querySelectorAll('.wrap > header.hero')[0].style.display = 'none';
+
+      if (result.duplicate){
+        document.getElementById('results').style.display = 'none';
+        document.getElementById('duplicateNotice').style.display = 'block';
+      } else {
+        try { localStorage.setItem(SUBMITTED_KEY, '1'); } catch (e){}
+        document.getElementById('results').style.display = 'block';
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
   }
 
   function submitToBackend(payload){
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('REPLACE') === 0){
       console.warn('APPS_SCRIPT_URL not configured; submission not sent.', payload);
-      return;
+      return Promise.resolve({ ok: false, duplicate: false });
     }
-    try {
-      fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-    } catch (err) {
+    return fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).then(function(r){ return r.json(); }).catch(function(err){
       console.error('Submission failed', err);
-    }
+      return { ok: false, duplicate: false };
+    });
   }
 })();
 </script>
