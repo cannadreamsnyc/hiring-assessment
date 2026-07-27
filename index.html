@@ -1,0 +1,795 @@
+<meta charset="utf-8">
+<title>Reliability & Character Assessment</title>
+<meta name="description" content="Interactive 40-question pre-employment screen for reliability, honesty, teamwork, following instructions, and initiative.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg: #f6f5fb;
+    --surface: #ffffff;
+    --surface-2: #f0eefa;
+    --border: #e6e2f5;
+    --text: #18162b;
+    --text-dim: #6c6788;
+    --accent: #5b4eee;
+    --accent-2: #8a7bff;
+    --accent-ink: #ffffff;
+    --accent-soft: #edeafd;
+    --good: #16a34a;
+    --good-bg: #e7f8ee;
+    --warn: #b45309;
+    --warn-bg: #fdf1de;
+    --bad: #dc2626;
+    --bad-bg: #fdeceb;
+    --shadow: 0 1px 2px rgba(24,15,60,0.04), 0 12px 28px -16px rgba(91,78,238,0.22);
+    --shadow-sm: 0 1px 2px rgba(24,15,60,0.05);
+    --r-lg: 20px;
+    --r-md: 14px;
+    --r-sm: 10px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e0c1a;
+      --surface: #17152a;
+      --surface-2: #1d1a34;
+      --border: #2a2747;
+      --text: #f1f0fb;
+      --text-dim: #9d97bd;
+      --accent: #9384ff;
+      --accent-2: #b9adff;
+      --accent-ink: #0e0c1a;
+      --accent-soft: #221f3f;
+      --good: #4ade80;
+      --good-bg: #112a1c;
+      --warn: #fbbf24;
+      --warn-bg: #362808;
+      --bad: #f87171;
+      --bad-bg: #341414;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 16px 32px -18px rgba(147,132,255,0.35);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e0c1a; --surface: #17152a; --surface-2: #1d1a34; --border: #2a2747;
+    --text: #f1f0fb; --text-dim: #9d97bd; --accent: #9384ff; --accent-2: #b9adff;
+    --accent-ink: #0e0c1a; --accent-soft: #221f3f;
+    --good: #4ade80; --good-bg: #112a1c; --warn: #fbbf24; --warn-bg: #362808;
+    --bad: #f87171; --bad-bg: #341414;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 16px 32px -18px rgba(147,132,255,0.35);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f5fb; --surface: #ffffff; --surface-2: #f0eefa; --border: #e6e2f5;
+    --text: #18162b; --text-dim: #6c6788; --accent: #5b4eee; --accent-2: #8a7bff;
+    --accent-ink: #ffffff; --accent-soft: #edeafd;
+    --good: #16a34a; --good-bg: #e7f8ee; --warn: #b45309; --warn-bg: #fdf1de;
+    --bad: #dc2626; --bad-bg: #fdeceb;
+    --shadow: 0 1px 2px rgba(24,15,60,0.04), 0 12px 28px -16px rgba(91,78,238,0.22);
+    --shadow-sm: 0 1px 2px rgba(24,15,60,0.05);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display {
+    font-family: -apple-system, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+  a { color: var(--accent); }
+
+  #progressbar {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-inner {
+    max-width: 760px; margin: 0 auto; padding: 12px 22px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .progress-track {
+    flex: 1; height: 7px; border-radius: 20px; background: var(--surface-2); overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 20px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .progress-count { font-size: 12.5px; color: var(--text-dim); white-space: nowrap; }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 90px; }
+
+  header.hero { padding: 8px 0 8px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; letter-spacing: 0.06em; color: var(--accent);
+    text-transform: uppercase; font-weight: 700; margin: 0 0 14px;
+    background: var(--accent-soft); padding: 5px 12px 5px 10px; border-radius: 999px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  h1.display {
+    font-size: 38px; line-height: 1.08; margin: 0 0 12px;
+  }
+  .sub { color: var(--text-dim); max-width: 58ch; margin: 0; font-size: 16px; }
+
+  .field-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .field input {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-sm);
+    padding: 11px 13px; color: var(--text); font-size: 14.5px; font-family: inherit;
+    box-shadow: var(--shadow-sm); transition: border-color 0.15s;
+  }
+  .field input:focus-visible { outline: none; border-color: var(--accent); }
+  .field input:invalid.touched { border-color: var(--bad); }
+  .field-note { color: var(--text-dim); font-size: 12.5px; margin: 10px 0 0; max-width: 62ch; }
+
+  .instructions {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 16px 18px; margin-top: 22px; font-size: 14px; color: var(--text-dim);
+    box-shadow: var(--shadow-sm);
+  }
+  .instructions strong { color: var(--text); }
+  .instructions .ic { flex-shrink: 0; color: var(--accent); margin-top: 1px; }
+
+  section.qsection { margin-top: 46px; }
+  .section-head {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 4px;
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: 12px; background: var(--accent-soft);
+    color: var(--accent); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-icon svg { width: 19px; height: 19px; }
+  .section-head h2.display { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+  .section-tally { margin-left: auto; font-size: 12px; color: var(--text-dim); background: var(--surface-2); padding: 4px 10px; border-radius: 999px; }
+  .section-desc { color: var(--text-dim); font-size: 13.5px; margin: 10px 0 0 50px; }
+
+  .question {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 20px 22px; margin-top: 16px; box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s;
+  }
+  .question.unanswered-flash { animation: flash 1.1s ease; }
+  @keyframes flash {
+    0%, 100% { box-shadow: var(--shadow-sm); }
+    30% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--bad) 30%, transparent); }
+  }
+  .qtext { font-size: 15.5px; margin: 0 0 14px; display: flex; gap: 12px; font-weight: 500; }
+  .qnum {
+    color: var(--accent); font-weight: 700; flex-shrink: 0; font-size: 13px;
+    background: var(--accent-soft); width: 24px; height: 24px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 11px; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: var(--r-md); cursor: pointer;
+    font-size: 14.5px; transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .opt:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); background: var(--surface-2); }
+  .opt:active { transform: scale(0.995); }
+  .opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .opt .tick {
+    flex-shrink: 0; width: 19px; height: 19px; border-radius: 50%;
+    border: 1.5px solid var(--border); margin-top: 1px; position: relative;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .opt .tick::after {
+    content: ""; position: absolute; inset: 4px; border-radius: 50%;
+    background: var(--accent-ink); transform: scale(0); transition: transform 0.15s;
+  }
+  .opt.selected {
+    border-color: var(--accent); background: var(--accent-soft);
+  }
+  .opt.selected .tick { border-color: var(--accent); background: var(--accent); }
+  .opt.selected .tick::after { transform: scale(1); }
+  .opt:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .submit-bar {
+    position: sticky; bottom: 0; margin-top: 48px; padding: 18px 0 24px;
+    background: linear-gradient(to top, var(--bg) 55%, transparent);
+  }
+  .submit-row {
+    display: flex; align-items: center; gap: 14px; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 18px 20px; box-shadow: var(--shadow);
+  }
+  .submit-row .status { font-size: 13.5px; color: var(--text-dim); }
+  button {
+    font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
+    border-radius: var(--r-sm); border: none; padding: 12px 22px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink);
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  button:hover { transform: translateY(-1px); }
+  button:active { transform: translateY(0); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  button.ghost {
+    background: var(--surface-2); color: var(--text); box-shadow: none;
+    border: 1px solid var(--border);
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---- results ---- */
+  #results { display: none; }
+  .score-hero {
+    display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 24px;
+    padding: 30px; margin-top: 14px; box-shadow: var(--shadow);
+  }
+  .score-ring { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .track { fill: none; stroke: var(--surface-2); stroke-width: 11; }
+  .score-ring .fill { fill: none; stroke: url(#ringGrad); stroke-width: 11; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1); }
+  .score-ring .num {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .score-ring .num .val { font-size: 32px; font-weight: 800; font-family: ui-monospace, monospace; }
+  .score-ring .num .max { font-size: 11px; color: var(--text-dim); }
+  .verdict-band {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px;
+  }
+  .verdict-title { font-size: 22px; margin: 0 0 8px; font-weight: 800; letter-spacing: -0.01em; }
+  .verdict-desc { color: var(--text-dim); font-size: 14.5px; max-width: 44ch; margin: 0; }
+
+  .section-grid { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sbar-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 16px 18px; box-shadow: var(--shadow-sm);
+  }
+  .sbar-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .sbar-icon { width: 28px; height: 28px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sbar-icon svg { width: 15px; height: 15px; }
+  .sbar-label { font-size: 13px; font-weight: 600; }
+  .sbar-val { margin-left: auto; font-size: 13px; font-family: ui-monospace, monospace; color: var(--text-dim); }
+  .sbar-track { height: 8px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+  .sbar-fill { height: 100%; border-radius: 5px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+
+  .flag-panel { margin-top: 30px; }
+  .flag-panel h3.display { font-size: 17px; margin-bottom: 4px; }
+  .flag-panel .sub { font-size: 13.5px; margin-bottom: 16px; }
+  .flag-item {
+    display: flex; gap: 12px; padding: 13px 15px; border-radius: var(--r-md);
+    background: var(--bad-bg); border: 1px solid color-mix(in srgb, var(--bad) 30%, var(--border));
+    margin-bottom: 8px; font-size: 13.5px;
+  }
+  .flag-item .fnum {
+    font-weight: 800; color: var(--bad); flex-shrink: 0; font-size: 12px;
+    background: color-mix(in srgb, var(--bad) 15%, transparent); padding: 2px 8px; border-radius: 6px; height: fit-content;
+  }
+  .flag-empty {
+    padding: 16px 18px; border-radius: var(--r-md); background: var(--good-bg);
+    border: 1px solid color-mix(in srgb, var(--good) 30%, var(--border));
+    font-size: 13.5px; color: var(--text);
+  }
+
+  .results-actions { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
+
+  footer.note {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-dim);
+  }
+
+  @media print {
+    #progressbar, #form, .results-actions { display: none !important; }
+    #results { display: block !important; }
+    body { background: #fff; color: #000; }
+    .score-hero, .sbar-card, .flag-item { box-shadow: none !important; }
+  }
+
+  @media (max-width: 560px) {
+    .field-grid { grid-template-columns: 1fr; }
+    .section-grid { grid-template-columns: 1fr; }
+    h1.display { font-size: 29px; }
+    .score-hero { padding: 22px; }
+    .section-desc { margin-left: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:var(--accent)" />
+      <stop offset="100%" style="stop-color:var(--accent-2)" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<div id="progressbar">
+  <div class="progress-inner">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-count mono" id="progressCount">0 / 40 answered</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow"><span class="dot"></span>Pre-Employment Screen</p>
+    <h1 class="display">Reliability &amp; Character Assessment</h1>
+    <p class="sub">40 short scenarios covering reliability, honesty, teamwork, following instructions, and initiative. Answer with what you'd actually do &mdash; plain answers score better than performed ones.</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="candidateName">Full name</label>
+        <input id="candidateName" type="text" autocomplete="name" placeholder="Full name" required>
+      </div>
+      <div class="field">
+        <label for="candidateRole">Position applied for</label>
+        <input id="candidateRole" type="text" autocomplete="off" placeholder="e.g. Budtender" required>
+      </div>
+      <div class="field">
+        <label for="candidatePhone">Phone number</label>
+        <input id="candidatePhone" type="tel" autocomplete="tel" placeholder="(555) 555-5555" required>
+      </div>
+      <div class="field">
+        <label for="candidateEmail">Email</label>
+        <input id="candidateEmail" type="email" autocomplete="email" placeholder="you@email.com" required>
+      </div>
+      <div class="field">
+        <label for="candidateDob">Date of birth</label>
+        <input id="candidateDob" type="date" autocomplete="bday" required>
+      </div>
+    </div>
+    <p class="field-note">Phone and email are used to send you a copy of your responses and to follow up on your application. Date of birth is used only to confirm minimum age eligibility for cannabis industry employment (21+).</p>
+
+    <div class="instructions">
+      <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div><strong>How this works:</strong> fill in your contact info, then choose one answer per question below. There's no timer. Every field and question must be completed before you can submit &mdash; the button will tell you if something's missing.</div>
+    </div>
+  </header>
+
+  <form id="form"></form>
+
+  <div id="results">
+    <header class="hero" style="padding-bottom:0;">
+      <p class="eyebrow"><span class="dot"></span>Result</p>
+      <h1 class="display" id="resultsHeading" style="font-size:30px;">Assessment Complete</h1>
+      <p class="sub" id="resultsSub"></p>
+      <p class="field-note">A copy of your responses has been emailed to you. Thanks for applying.</p>
+    </header>
+
+    <div class="score-hero">
+      <div class="score-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle class="track" cx="70" cy="70" r="59"></circle>
+          <circle class="fill" id="ringFill" cx="70" cy="70" r="59" stroke-dasharray="370.7" stroke-dashoffset="370.7"></circle>
+        </svg>
+        <div class="num">
+          <div class="val mono" id="scoreVal">0</div>
+          <div class="max">of 80</div>
+        </div>
+      </div>
+      <div>
+        <div class="verdict-band" id="verdictBand">&mdash;</div>
+        <div class="verdict-title" id="verdictTitle">&mdash;</div>
+        <p class="verdict-desc" id="verdictDesc"></p>
+      </div>
+    </div>
+
+    <div class="section-grid" id="sectionBars"></div>
+
+    <div class="flag-panel">
+      <h3 class="display">Answers Worth Probing In Interview</h3>
+      <p class="sub">Red-flag responses only &mdash; the answers most correlated with each trait's failure mode. One alone isn't disqualifying; look for a pattern.</p>
+      <div id="flagList"></div>
+    </div>
+
+    <div class="results-actions">
+      <button onclick="window.print()">Print / Save Report</button>
+      <button class="ghost" id="restartBtn">Start Over</button>
+    </div>
+  </div>
+
+  <footer class="note">
+    Screening aid, not a certified psychometric instrument &mdash; use alongside a normal interview, and apply identically to every candidate for the same role.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxE9iSA5Jz1E51i2kONtYFTcxdZWgNrSOGTzuRBjfVAeudxFpFNkacsmqxMQp-Zby7TFA/exec';
+
+  var ICONS = {
+    A: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+    B: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+    C: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5c2.5.3 4.5 2.4 4.5 5"/></svg>',
+    D: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h10v16H9"/><path d="M9 4H5v16h4"/><path d="M13 9l2 2 4-4"/></svg>',
+    E: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>'
+  };
+
+  // Each question: text, options[4] with a score (2 = best, 1 = neutral, 0 = red flag)
+  var sections = [
+    {letter:"A", title:"Reliability & Attendance", desc:"Answer based on what you would actually do, not what sounds best.", qs:[
+      ["You are scheduled to open the store at 9:00 AM. You wake up and realize you overslept and will be about 20 minutes late. What do you do?",
+        [["Call or text your manager immediately to let them know and give an ETA",2],["Rush in without saying anything since you'll only be a few minutes late",0],["Wait until you arrive to explain in person",1],["Ask a coworker to cover for you without telling your manager",0]]],
+      ["How many days of work have you missed in the past 6 months at a previous job (or school, if you have no work history) without prior notice?",
+        [["0",2],["1-2",1],["3-5",1],["6 or more",0]]],
+      ["Your shift ends at 6:00 PM but a delivery truck is still being unloaded. What's the right move?",
+        [["Stay until the task is reasonably wrapped up or handed off properly, even if it runs a little past 6",2],["Leave exactly at 6:00 regardless of the situation",0],["Leave early since it's not technically your job",1],["Tell your manager it's someone else's problem",1]]],
+      ["You're feeling mildly under the weather but not seriously ill. It's a day you're scheduled and short-staffed. What do you do?",
+        [["Come in unless you're contagious or unsafe to work, and tell your manager how you're feeling",2],["Call out without much thought since you don't feel 100%",1],["Text a coworker to cover without informing management",1],["Just don't show up and explain later",0]]],
+      ["You notice you're going to be late for nearly every shift this week due to a transportation issue. What's the best approach?",
+        [["Tell your manager as soon as you notice the pattern and work out a plan together",2],["Just show up late each day without mentioning it",0],["Wait to see if anyone notices before saying anything",1],["Quietly find a new job instead of addressing it",1]]],
+      ["You said you'd have a task finished by end of day, but you're running behind. What do you do?",
+        [["Give your manager a heads-up before the deadline passes, not after",2],["Finish it whenever you get to it without mentioning the delay",1],["Say it's done even though it isn't, planning to finish later",0],["Blame the delay on someone else when asked",1]]],
+      ["How would a previous supervisor most likely describe your attendance?",
+        [["Consistent and on time",2],["Generally fine, occasional lateness",1],["Inconsistent",1],["I'd rather not say",0]]],
+      ["You're asked to work a shift outside your normal schedule due to a coworker's emergency. Your honest reaction is:",
+        [["I'll do my best to make it work if I reasonably can",2],["I'll only do it if there's extra pay involved",1],["I'll say yes but probably cancel last minute",0],["I'll say no regardless of the situation",1]]]
+    ]},
+    {letter:"B", title:"Honesty & Integrity", desc:"", qs:[
+      ["You find a $20 bill on the sales floor with no customer nearby. What do you do?",
+        [["Turn it in to a manager or the register drop as lost-and-found",2],["Keep it, since no one saw you find it",0],["Ask coworkers if it's theirs before deciding what to do with it",1],["Leave it where it is",1]]],
+      ["At the end of your shift, the cash drawer is $15 over. What's the right move?",
+        [["Report the discrepancy exactly as it is, even though it's in your favor",2],["Pocket the difference since it's a small amount",0],["Adjust the count so it balances without saying anything",1],["Say nothing and let the next person deal with it",1]]],
+      ["You accidentally damage a product while restocking. No one saw it happen. What do you do?",
+        [["Report it to a manager and explain what happened",2],["Hide the item so it isn't noticed",0],["Put it back on the shelf as if nothing happened",1],["Blame it on a delivery issue if asked",1]]],
+      ["In your opinion, how common is it for employees at most retail or service jobs to take small items without paying?",
+        [["It happens sometimes, but it's still wrong and shouldn't be excused",2],["It's extremely common and mostly harmless",1],["Almost everyone does it eventually",0],["It's fine as long as it's inexpensive",1]]],
+      ["You made a mistake that cost the business money or product. Your manager hasn't noticed yet. What do you do?",
+        [["Tell them proactively, even though it's uncomfortable",2],["Wait to see if it gets noticed first",1],["Fix it quietly if possible and say nothing",0],["Let a coworker discover it and explain if asked",1]]],
+      ["A friend visiting your workplace asks you to give them an employee discount they don't qualify for. What do you do?",
+        [["Politely explain you can't and follow policy",2],["Give it to them quietly, just this once",1],["Give it to them if a manager isn't around",0],["Give it to them and ask them not to mention it",1]]],
+      ["You overhear a coworker planning to falsify a report to cover up a mistake. What do you do?",
+        [["Encourage them to report it honestly, and raise it with a manager if they don't",2],["Stay out of it entirely, it's not your business",1],["Help them if they ask, since you'd want the same loyalty",0],["Say nothing but avoid working with them going forward",1]]],
+      ["When you don't know the answer to a customer's question, what do you do?",
+        [["Say you're not sure and find someone who knows, or look it up",2],["Make a confident guess so you seem knowledgeable",0],["Change the subject",1],["Tell them whatever gets them to stop asking",1]]]
+    ]},
+    {letter:"C", title:"Team Player", desc:"", qs:[
+      ["A coworker is falling behind on a task and it's slowing the whole team down. What do you do?",
+        [["Offer to help or ask if they need anything, once you're able to",2],["Let them handle it, it's their responsibility",1],["Point it out to a manager without offering to help",0],["Do your own tasks faster to compensate, without saying anything",1]]],
+      ["You and a coworker disagree about the best way to handle a task. What's your approach?",
+        [["Discuss it calmly and be willing to try their way or find a compromise",2],["Insist on doing it your way since you're confident you're right",0],["Avoid the conversation and just do it your own way anyway",1],["Bring it straight to a manager without talking to them first",1]]],
+      ["A coworker gets credit in front of a manager for an idea that was actually a joint effort. How do you react?",
+        [["Let it go in the moment, and mention your contribution calmly and factually if it comes up naturally later",2],["Publicly correct them right there",1],["Say nothing and quietly resent it going forward",1],["Stop contributing ideas to that person in the future",1]]],
+      ["You're asked to train a new hire who seems to be struggling. What's your approach?",
+        [["Be patient, explain things more than once if needed, and check in on their progress",2],["Show them once and expect them to keep up",1],["Assign the training to someone else if they seem slow to learn",0],["Give minimal instruction so they learn by figuring it out themselves",1]]],
+      ["You notice a coworker seems stressed or overwhelmed during a shift. What do you do?",
+        [["Check in with them and see if there's something you can take off their plate",2],["Assume it's not your concern",0],["Mention it to other coworkers instead of them",1],["Ignore it, everyone has bad days",1]]],
+      ["When working on a shared task, how do you generally prefer to operate?",
+        [["Communicate clearly about who's doing what so nothing falls through the cracks",2],["Just start working and assume it'll sort itself out",1],["Wait to be told exactly what to do",0],["Take over the parts I find most interesting and leave the rest",1]]],
+      ["A new team policy is announced that you personally think is a worse way of doing things. How do you handle it?",
+        [["Raise the concern respectfully through the right channel, but follow the policy while it's in effect",2],["Follow it in front of managers but ignore it otherwise",0],["Complain about it to coworkers to build support against it",1],["Follow it, but do the bare minimum to show I disagree",1]]],
+      ["How do you handle it when a team member makes a mistake that affects your own work?",
+        [["Address it directly and constructively with them, focused on fixing it going forward",2],["Report it to a manager first, without talking to them",1],["Redo the work yourself and say nothing",1],["Bring it up in front of other coworkers so it doesn't happen again",0]]]
+    ]},
+    {letter:"D", title:"Following Instructions & Procedures", desc:"", qs:[
+      ["A manager gives you an instruction that differs from how you were trained to do it. What do you do?",
+        [["Follow the manager's instruction, and ask a clarifying question afterward if something still seems off",2],["Do it the way you were originally trained instead",0],["Do a mix of both without telling anyone",1],["Ask a coworker what they think is right and follow their opinion",1]]],
+      ["You're given a set of instructions for a task but they seem incomplete or unclear. What's the right move?",
+        [["Ask for clarification before starting, rather than guessing",2],["Start the task and figure it out as you go",1],["Do what seems most logical without checking, even if you're unsure",0],["Skip the task until someone else clarifies it for you",1]]],
+      ["A workplace policy exists for compliance or safety reasons that isn't obvious to you. How do you approach it?",
+        [["Follow it as written, and ask why if you're curious, rather than assuming it doesn't matter",2],["Follow it only when someone is watching",1],["Follow the parts that seem to make sense and skip the rest",1],["Ignore it if it slows you down and no one's around",0]]],
+      ["You think you've found a faster way to do a task than the documented procedure. What do you do?",
+        [["Suggest the change to a manager and get approval before switching to it",2],["Just start doing it your way since it's faster",0],["Do it your way only when no one is watching",1],["Tell coworkers to switch to your method without checking first",1]]],
+      ["A manager asks you to redo a task you thought was already done correctly. Your reaction is:",
+        [["Redo it as asked, and ask what specifically needs to change so you get it right",2],["Push back and explain why your version was fine",1],["Redo it, but do the minimum to satisfy them technically",0],["Get frustrated and mention it to coworkers",1]]],
+      ["You're given a checklist for closing procedures. On a busy night, you're short on time. What do you do?",
+        [["Complete every item on the checklist, even if it means staying a bit later",2],["Skip the steps that seem least important to save time",0],["Do the checklist quickly without checking your work carefully",1],["Have someone else finish it so you can leave on time",1]]],
+      ["A manager corrects you in a way that feels a little blunt or short. How do you respond in the moment?",
+        [["Take the correction professionally and adjust, even if the delivery wasn't ideal",2],["Get visibly upset or defensive",0],["Argue back about how it was said",1],["Shut down and stop engaging for the rest of the shift",1]]],
+      ["You're asked to follow a safety or compliance procedure (ID checks, handling protocols, etc.) that adds extra steps to your work. What's your attitude toward it?",
+        [["It matters and I follow it fully every time, no shortcuts",2],["I follow it when it's convenient",1],["I follow it only when a manager is nearby",1],["I think most of these rules are excessive and skip what I can",0]]]
+    ]},
+    {letter:"E", title:"Initiative", desc:"", qs:[
+      ["You finish your assigned tasks with time left in your shift. What do you do?",
+        [["Find something useful to do or ask a manager what's needed next",2],["Wait quietly until your shift ends",1],["Take a longer break since your work is done",1],["Leave early if no one's paying attention",0]]],
+      ["You notice a recurring small problem (a messy area, a supply that's frequently low, a step that's often skipped) that isn't officially your job to fix. What do you do?",
+        [["Fix it if I reasonably can, or flag it to whoever can",2],["Ignore it since it's not my responsibility",0],["Mention it to coworkers but not to management",1],["Assume someone else will eventually deal with it",1]]],
+      ["You think of an idea that could genuinely improve how a task is done. What do you do?",
+        [["Bring it to a manager, even if it might not be used",2],["Keep it to myself unless directly asked for ideas",1],["Just implement it on my own without telling anyone",0],["Assume it's already been thought of and not worth mentioning",1]]],
+      ["On your first week at a new job, how do you approach learning things not explicitly explained to you?",
+        [["Ask questions and observe closely to pick things up quickly",2],["Wait to be taught everything step by step",1],["Only learn what's strictly required for my exact role",0],["Figure things out passively over time without asking",1]]],
+      ["A customer or task falls slightly outside your usual responsibilities, but you're capable of handling it. What do you do?",
+        [["Help if I reasonably can, or find the right person quickly if I can't",2],["Tell them it's not my department and move on",0],["Help only if a manager specifically tells me to",1],["Point vaguely in a direction and go back to what I was doing",1]]],
+      ["You're given a general goal ('improve how we greet customers') without specific steps. What's your approach?",
+        [["Think through a few concrete ideas and propose or try them",2],["Wait for specific instructions before doing anything",1],["Do nothing differently since it wasn't a direct order",0],["Assume it doesn't really apply to your role",1]]],
+      ["A tool or process at work is clearly inefficient. Nobody has addressed it. What's your honest instinct?",
+        [["Mention it to someone who can change it, with a suggestion if I have one",2],["Work around it quietly without saying anything",0],["Complain about it to coworkers without raising it further",1],["Assume it must be that way for a reason I don't need to understand",1]]],
+      ["Looking back at a past job or project, how would you describe the balance between waiting for instructions and acting on your own judgment?",
+        [["I act on reasonable judgment for small things and check in on bigger ones",2],["I mostly wait to be told what to do",1],["I mostly just do what I think is right without checking in",1],["I try to do as little as possible until asked",0]]]
+    ]}
+  ];
+
+  function shuffle(arr){
+    for (var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  var form = document.getElementById('form');
+  var totalQs = 0;
+  var qCounter = 0;
+  var flatQuestions = []; // { num, text, section, sectionTitle, options:[{text,score}] }
+
+  sections.forEach(function(sec){
+    var secEl = document.createElement('section');
+    secEl.className = 'qsection';
+    var head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = '<span class="section-icon">' + ICONS[sec.letter] + '</span>' +
+      '<h2 class="display">' + sec.title + '</h2>' +
+      '<span class="section-tally mono" id="tally-' + sec.letter + '">0 / ' + sec.qs.length + '</span>';
+    secEl.appendChild(head);
+    if (sec.desc){
+      var d = document.createElement('p');
+      d.className = 'section-desc';
+      d.textContent = sec.desc;
+      secEl.appendChild(d);
+    }
+
+    sec.qs.forEach(function(q){
+      qCounter++;
+      var num = qCounter;
+      var opts = q[1].map(function(o){ return {text:o[0], score:o[1]}; });
+      shuffle(opts);
+      flatQuestions.push({num:num, text:q[0], section:sec.letter, sectionTitle:sec.title, options:opts});
+
+      var qEl = document.createElement('div');
+      qEl.className = 'question';
+      qEl.id = 'q' + num;
+      var qt = document.createElement('p');
+      qt.className = 'qtext';
+      qt.innerHTML = '<span class="qnum">' + num + '</span><span>' + q[0] + '</span>';
+      qEl.appendChild(qt);
+
+      var optsWrap = document.createElement('div');
+      optsWrap.className = 'options';
+      opts.forEach(function(o, idx){
+        var label = document.createElement('label');
+        label.className = 'opt';
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + num;
+        input.value = idx;
+        input.addEventListener('change', function(){
+          Array.prototype.forEach.call(optsWrap.querySelectorAll('.opt'), function(el){ el.classList.remove('selected'); });
+          label.classList.add('selected');
+          updateProgress();
+        });
+        var tick = document.createElement('span');
+        tick.className = 'tick';
+        var span = document.createElement('span');
+        span.textContent = o.text;
+        label.appendChild(input);
+        label.appendChild(tick);
+        label.appendChild(span);
+        optsWrap.appendChild(label);
+      });
+      qEl.appendChild(optsWrap);
+      secEl.appendChild(qEl);
+    });
+
+    form.appendChild(secEl);
+  });
+
+  totalQs = qCounter;
+
+  var submitBar = document.createElement('div');
+  submitBar.className = 'submit-bar';
+  submitBar.innerHTML = '<div class="submit-row">' +
+    '<span class="status mono" id="submitStatus">0 / ' + totalQs + ' answered</span>' +
+    '<button type="submit" id="submitBtn">See Results</button>' +
+    '</div>';
+  form.appendChild(submitBar);
+
+  function updateProgress(){
+    var answered = 0;
+    var perSection = {};
+    sections.forEach(function(s){ perSection[s.letter] = 0; });
+    flatQuestions.forEach(function(fq){
+      var checked = form.querySelector('input[name="q' + fq.num + '"]:checked');
+      if (checked){ answered++; perSection[fq.section]++; }
+    });
+    document.getElementById('progressFill').style.width = (answered / totalQs * 100) + '%';
+    document.getElementById('progressCount').textContent = answered + ' / ' + totalQs + ' answered';
+    document.getElementById('submitStatus').textContent = answered + ' / ' + totalQs + ' answered';
+    sections.forEach(function(s){
+      var el = document.getElementById('tally-' + s.letter);
+      if (el) el.textContent = perSection[s.letter] + ' / ' + s.qs.length;
+    });
+    return answered;
+  }
+  updateProgress();
+
+  var contactFields = ['candidateName', 'candidateRole', 'candidatePhone', 'candidateEmail', 'candidateDob'];
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    var missingContact = contactFields.filter(function(id){
+      var el = document.getElementById(id);
+      el.classList.add('touched');
+      return !el.checkValidity();
+    });
+    if (missingContact.length){
+      document.getElementById(missingContact[0]).scrollIntoView({behavior:'smooth', block:'center'});
+      document.getElementById(missingContact[0]).focus();
+      return;
+    }
+
+    var answered = updateProgress();
+    if (answered < totalQs){
+      var firstMissing = flatQuestions.find(function(fq){
+        return !form.querySelector('input[name="q' + fq.num + '"]:checked');
+      });
+      if (firstMissing){
+        var el = document.getElementById('q' + firstMissing.num);
+        el.scrollIntoView({behavior:'smooth', block:'center'});
+        el.classList.remove('unanswered-flash');
+        void el.offsetWidth;
+        el.classList.add('unanswered-flash');
+      }
+      return;
+    }
+    computeResults();
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', function(){
+    location.reload();
+  });
+
+  function computeResults(){
+    var sectionScores = {}; // letter -> {score, max}
+    sections.forEach(function(s){ sectionScores[s.letter] = {score:0, max:s.qs.length * 2, title:s.title}; });
+    var totalScore = 0;
+    var flags = [];
+
+    var answerLog = [];
+    flatQuestions.forEach(function(fq){
+      var checkedIdx = form.querySelector('input[name="q' + fq.num + '"]:checked').value;
+      var opt = fq.options[parseInt(checkedIdx, 10)];
+      totalScore += opt.score;
+      sectionScores[fq.section].score += opt.score;
+      answerLog.push({num: fq.num, section: fq.section, text: fq.text, chosen: opt.text});
+      if (opt.score === 0){
+        flags.push({num: fq.num, section: fq.sectionTitle, text: fq.text, chosen: opt.text});
+      }
+    });
+
+    var name = document.getElementById('candidateName').value.trim();
+    var role = document.getElementById('candidateRole').value.trim();
+    var phone = document.getElementById('candidatePhone').value.trim();
+    var email = document.getElementById('candidateEmail').value.trim();
+    var dob = document.getElementById('candidateDob').value;
+
+    document.getElementById('resultsSub').textContent =
+      (name ? name : 'Candidate') + (role ? ' — ' + role : '') + ' · ' + new Date().toLocaleDateString();
+
+    var pct = totalScore / 80;
+    var circumference = 2 * Math.PI * 59;
+    var ring = document.getElementById('ringFill');
+    ring.setAttribute('stroke-dasharray', circumference.toFixed(1));
+    ring.setAttribute('stroke-dashoffset', (circumference * (1 - pct)).toFixed(1));
+    document.getElementById('scoreVal').textContent = totalScore;
+
+    var band = document.getElementById('verdictBand');
+    var title = document.getElementById('verdictTitle');
+    var desc = document.getElementById('verdictDesc');
+
+    var redFlagSections = {};
+    flags.forEach(function(f){ redFlagSections[f.section] = (redFlagSections[f.section] || 0) + 1; });
+    var maxFlagInSection = Math.max(0, Object.keys(redFlagSections).length ? Math.max.apply(null, Object.values(redFlagSections)) : 0);
+
+    if (totalScore >= 68 && maxFlagInSection < 3){
+      band.textContent = 'Strong';
+      band.style.color = 'var(--good)';
+      band.style.background = 'var(--good-bg)';
+      title.textContent = 'Advance to interview';
+      desc.textContent = 'Strong indicators across all five traits. No concentrated pattern of concerning answers.';
+    } else if (totalScore >= 52 && maxFlagInSection < 3){
+      band.textContent = 'Solid';
+      band.style.color = 'var(--accent)';
+      band.style.background = 'var(--accent-soft)';
+      title.textContent = 'Generally solid — probe the lower section(s)';
+      desc.textContent = 'A reasonable baseline. Use the interview to ask directly about whichever section scored lowest below.';
+    } else {
+      band.textContent = 'Caution';
+      band.style.color = 'var(--bad)';
+      band.style.background = 'var(--bad-bg)';
+      title.textContent = 'Serious caution flag';
+      desc.textContent = maxFlagInSection >= 3
+        ? 'Multiple red-flag answers are concentrated in one trait — probe that specifically before proceeding.'
+        : 'Score is below the typical bar. Treat as a caution flag and probe directly in interview before proceeding.';
+    }
+
+    var barsWrap = document.getElementById('sectionBars');
+    barsWrap.innerHTML = '';
+    sections.forEach(function(s){
+      var d = sectionScores[s.letter];
+      var p = d.score / d.max;
+      var color = p >= 0.85 ? 'var(--good)' : (p >= 0.6 ? 'var(--accent)' : 'var(--bad)');
+      var bg = p >= 0.85 ? 'var(--good-bg)' : (p >= 0.6 ? 'var(--accent-soft)' : 'var(--bad-bg)');
+      var card = document.createElement('div');
+      card.className = 'sbar-card';
+      card.innerHTML =
+        '<div class="sbar-top">' +
+          '<span class="sbar-icon" style="background:' + bg + '; color:' + color + ';">' + ICONS[s.letter] + '</span>' +
+          '<span class="sbar-label">' + s.title + '</span>' +
+          '<span class="sbar-val">' + d.score + '/' + d.max + '</span>' +
+        '</div>' +
+        '<div class="sbar-track"><div class="sbar-fill" style="width:' + (p*100) + '%; background:' + color + ';"></div></div>';
+      barsWrap.appendChild(card);
+    });
+
+    var flagList = document.getElementById('flagList');
+    flagList.innerHTML = '';
+    if (flags.length === 0){
+      var empty = document.createElement('div');
+      empty.className = 'flag-empty';
+      empty.textContent = 'No red-flag answers selected. Nothing specific to probe from this test alone.';
+      flagList.appendChild(empty);
+    } else {
+      flags.forEach(function(f){
+        var item = document.createElement('div');
+        item.className = 'flag-item';
+        item.innerHTML = '<span class="fnum">Q' + f.num + '</span><span><strong>' + f.section + '.</strong> Chose: "' + f.chosen + '"</span>';
+        flagList.appendChild(item);
+      });
+    }
+
+    submitToBackend({
+      name: name,
+      role: role,
+      phone: phone,
+      email: email,
+      dob: dob,
+      score: totalScore,
+      band: band.textContent,
+      sections: { A: sectionScores.A.score, B: sectionScores.B.score, C: sectionScores.C.score, D: sectionScores.D.score, E: sectionScores.E.score },
+      flags: flags.map(function(f){ return 'Q' + f.num + ' (' + f.section + '): chose "' + f.chosen + '"'; }),
+      answers: answerLog
+    });
+
+    document.getElementById('form').style.display = 'none';
+    document.querySelectorAll('.wrap > header.hero')[0].style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function submitToBackend(payload){
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('REPLACE') === 0){
+      console.warn('APPS_SCRIPT_URL not configured; submission not sent.', payload);
+      return;
+    }
+    try {
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error('Submission failed', err);
+    }
+  }
+})();
+</script>
